@@ -1,38 +1,60 @@
-import { ServerResponse } from "http"
-import { ReqType } from "../app"
+import { ServerResponse } from "http";
+import {
+  deleteBlog,
+  getDetail,
+  getList,
+  newBlog,
+  updateBlog,
+} from "@controller/blog";
+import { ErrorModel, SuccessModel } from "@model/resModel";
+import { ReqType } from "@src/app";
 
 const handleBlogRouter = (req: ReqType, res: ServerResponse) => {
-  const { method, path } = req
+  const { method, path } = req;
 
-  if(method === 'GET' && path === '/api/blog/list') {
-    return {
-      msg: '这是获取博客列表的接口'
+  if (method === "GET" && path === "/api/blog/list") {
+    const { author = "", keyword = "" } = req.query;
+    const result = getList(author, keyword);
+    return new SuccessModel(result);
+  }
+
+  if (method === "GET" && path === "/api/blog/detail") {
+    const { id } = req.query;
+    const result = getDetail(id);
+    return new SuccessModel(result);
+  }
+
+  if (method === "POST" && path === "/api/blog/new") {
+    const { body } = req;
+    const result = newBlog(body);
+    if (result) {
+      return new SuccessModel(result);
+    } else {
+      return new ErrorModel("更新博客失败");
     }
   }
 
-  if(method === 'GET' && path === '/api/blog/detail') {
-    return {
-      msg: '这是获取博客详情的接口'
+  if (method === "POST" && path === "/api/blog/update") {
+    const { body } = req;
+    const result = updateBlog(body);
+    if (result) {
+      return new SuccessModel(result);
+    } else {
+      return new ErrorModel("更新博客失败");
     }
   }
 
-  if(method === 'POST' && path === '/api/blog/new') {
-    return {
-      msg: '这是新增博客的接口'
+  if (method === "POST" && path === "/api/blog/delete") {
+    const {
+      body: { id },
+    } = req;
+    const result = deleteBlog(id);
+    if (result) {
+      return new SuccessModel();
+    } else {
+      return new ErrorModel("删除博客失败");
     }
   }
+};
 
-  if(method === 'POST' && path === '/api/blog/update') {
-    return {
-      msg: '这是更新博客的接口'
-    }
-  }
-
-  if(method === 'POST' && path === '/api/blog/delete') {
-    return {
-      msg: '这是删除博客的接口'
-    }
-  }
-}
-
-export default handleBlogRouter
+export default handleBlogRouter;

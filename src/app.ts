@@ -1,43 +1,67 @@
-const http = require('http')
-import { IncomingMessage, ServerResponse } from "http"
-import handleBlogRouter from "./router/blog"
-import handleUserRouter from "./router/user"
+const querystring = require("querystring");
+import { IncomingMessage, ServerResponse } from "http";
+import handleBlogRouter from "./router/blog";
+import handleUserRouter from "./router/user";
 
+export type ReqType = IncomingMessage & {
+  path?: string;
+  query?: Record<string, string>;
+  body?: Record<string, string>;
+};
 
-export type ReqType = IncomingMessage & {path: string}
+function getPostData(req: ReqType) {
+  return new Promise(
+    (resolve: (value: Record<string, string>) => void, reject) => {
+      if (req.method !== "POST") {
+        resolve({});
+        return;
+      }
+      if (req.headers["content-type"] !== "application/json") {
+        resolve({});
+        return;
+      }
+      let postData = "";
+      req.on("data", (chunk) => {
+        postData += chunk.toString();
+      });
+      req.on("end", () => {
+        if (!postData) {
+          resolve({});
+          return;
+        }
+        resolve(JSON.parse(postData));
+      });
+    }
+  );
+}
 
-const server = http.createServer((req: ReqType, res: ServerResponse) => {
-
+export default (req: ReqType, res: ServerResponse) => {
   // 设置返回格式 JSON
-  res.setHeader('Content-Type', 'application/json')
+  res.setHeader("Content-Type", "application/json");
 
-  const { url } = req
-  req.path = url.split('?')[0]
+  const { url } = req;
+  req.path = url.split("?")[0];
+  req.query = querystring.parse(url.split("?")[1]);
 
-  // 处理 blog 路由
-  const blogData = handleBlogRouter(req, res)
-  if(blogData) {
-    res.end(
-      JSON.stringify(blogData)
-    )
-    return 
-  }
+  getPostData(req).then((postData) => {
+    req.body = postData;
+    // 处理 blog 路由
+    const blogData = handleBlogRouter(req, res);
+    if (blogData) {
+      res.end(JSON.stringify(blogData));
+      return;
+    }
 
-  // 处理 user 路由
-  const userData = handleUserRouter(req, res)
-  if(userData) {
-    res.end(
-      JSON.stringify(userData)
-    )
-    return
-  }
+    // 处理 user 路由
+    const userData = handleUserRouter(req, res);
+    if (userData) {
+      res.end(JSON.stringify(userData));
+      return;
+    }
 
-  // 未命中路由返回 404
-  res.writeHead(404, {'Content-type': "text/plain"})
-  res.write('404 Not Found\n')
-  res.end()
-})
-
-server.listen(3000, () => {
-  console.log('server in http://localhost:3000')
-})
+    // 未命中路由返回 404
+    res.writeHead(404, { "Content-type": "text/plain" });
+    res.write("404 Not Found\n");
+    res.end();
+  });
+};
