@@ -4,12 +4,12 @@ import {
   getDetail,
   getList,
   newBlog,
-  updateBlog,
+  updateBlog
 } from "@controller/blog";
 import { ErrorModel, SuccessModel } from "@model/resModel";
 import { ReqType } from "@src/app";
 
-const handleBlogRouter = (req: ReqType, res: ServerResponse) => {
+const handleBlogRouter = (req: ReqType, _res: ServerResponse): any => {
   const { method, path } = req;
 
   if (method === "GET" && path === "/api/blog/list") {
@@ -46,7 +46,7 @@ const handleBlogRouter = (req: ReqType, res: ServerResponse) => {
 
   if (method === "POST" && path === "/api/blog/delete") {
     const {
-      body: { id },
+      body: { id }
     } = req;
     const result = deleteBlog(id);
     if (result) {

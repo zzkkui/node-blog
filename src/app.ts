@@ -35,7 +35,7 @@ function getPostData(req: ReqType) {
   );
 }
 
-export default (req: ReqType, res: ServerResponse) => {
+export default (req: ReqType, res: ServerResponse): void => {
   // 设置返回格式 JSON
   res.setHeader("Content-Type", "application/json");
 

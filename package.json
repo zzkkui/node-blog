@@ -5,17 +5,46 @@
   "main": "app.js",
   "scripts": {
     "start:tsc": "tsc && node -r tsconfig-paths/register dist/bin/www",
-    "start": "ts-node -r tsconfig-paths/register bin/www",
-    "serve": "ts-node-dev -r tsconfig-paths/register bin/www"
+    "start": "npm run tsc && ts-node -r tsconfig-paths/register bin/www",
+    "serve": "ts-node-dev -r tsconfig-paths/register bin/www",
+    "lint": "npm run tsc && eslint --ext .ts ./src",
+    "lint-fix": "npm run lint -- --fix",
+    "tsc": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^15.12.4",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "airbnb": "^0.0.2",
+    "cz-customizable": "^6.3.0",
+    "eslint": "^7.29.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^6.0.0",
+    "prettier": "^2.3.1",
     "ts-node": "^10.0.0",
     "ts-node-dev": "^1.1.6",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.3.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "npm run lint",
+      "prettier .prettierrc --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   }
 }

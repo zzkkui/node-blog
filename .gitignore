@@ -3,6 +3,7 @@
 node_modules
 /dist
 package-lock.json
+yarn.lock
 
 # local env files
 .env.local
@@ -22,5 +23,4 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# 忽略用户 token 表
-/public/user.json
+*.code-workspace

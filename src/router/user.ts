@@ -8,7 +8,7 @@ const handleUserRouter = (req: ReqType, res: ServerResponse) => {
 
   if (method === "POST" && path === "/api/user/login") {
     const {
-      body: { username, password },
+      body: { username, password }
     } = req;
     const result = loginCheck(username, password);
     if (result) {

@@ -13,15 +13,15 @@ export const getList = (author: string, keyword: string) => {
       title: "标题A",
       content: "内容A",
       createTime: 1624531920099,
-      author: "zzkkui",
+      author: "zzkkui"
     },
     {
       id: 2,
       title: "标题B",
       content: "内容N",
       createTime: 1624532103680,
-      author: "zoey",
-    },
+      author: "zoey"
+    }
   ];
   return list;
 };
@@ -32,7 +32,7 @@ export const getDetail = (id: string) => {
     title: "标题A",
     content: "内容A",
     createTime: 1624531920099,
-    author: "zzkkui",
+    author: "zzkkui"
   };
   return detail;
 };
@@ -44,7 +44,7 @@ export const newBlog = (blogData = {}) => {
     title: "标题C",
     content: "内容C",
     createTime: 1624613180813,
-    author: "momo",
+    author: "momo"
   };
   return detail;
 };
@@ -56,7 +56,7 @@ export const updateBlog = (blogData = {}) => {
     title: "标题C",
     content: "内容C",
     createTime: 1624613180813,
-    author: "momo",
+    author: "momo"
   };
   return detail;
 };
