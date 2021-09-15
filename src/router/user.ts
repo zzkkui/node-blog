@@ -3,7 +3,7 @@ import { ReqType } from "@src/app";
 import { loginCheck } from "@src/controller/user";
 import { ErrorModel, SuccessModel } from "@src/model/resModel";
 
-const handleUserRouter = (req: ReqType, res: ServerResponse) => {
+const handleUserRouter = (req: ReqType, _res: ServerResponse) => {
   const { method, path } = req;
 
   if (method === "POST" && path === "/api/user/login") {
