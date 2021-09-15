@@ -11,7 +11,7 @@ export type ReqType = IncomingMessage & {
 
   query?: Record<string, string>;
 
-  body?: Record<string, string>;
+  body?: any;
 };
 
 function getPostData(req: ReqType) {
@@ -59,12 +59,12 @@ export default (req: ReqType, res: ServerResponse): void => {
 
   req.query = querystring.parse(url.split("?")[1]);
 
-  getPostData(req).then((postData) => {
+  getPostData(req).then(async (postData) => {
     req.body = postData;
 
     // 处理 blog 路由
 
-    const blogData = handleBlogRouter(req, res);
+    const blogData = await handleBlogRouter(req, res);
 
     if (blogData) {
       res.end(JSON.stringify(blogData));

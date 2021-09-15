@@ -6,19 +6,22 @@
   "scripts": {
     "start:tsc": "tsc && node -r tsconfig-paths/register dist/bin/www",
     "start": "npm run tsc && ts-node -r tsconfig-paths/register bin/www",
-    "serve": "ts-node-dev -r tsconfig-paths/register bin/www",
+    "serve": "cross-env NODE_ENV=dev ts-node-dev -r tsconfig-paths/register bin/www",
     "lint": "npm run tsc && eslint --ext .ts ./src",
-    "lint-fix": "npm run lint -- --fix",
-    "tsc": "tsc --noEmit"
+    "lint-fix": "npm run lint --fix",
+    "tsc": "tsc --noEmit",
+    "prd": "cross-env NODE_ENV=production tsc && node -r tsconfig-paths/register dist/bin/www"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/mysql": "^2.15.19",
     "@types/node": "^15.12.4",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "airbnb": "^0.0.2",
+    "cross-env": "^7.0.3",
     "cz-customizable": "^6.3.0",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -46,5 +49,8 @@
     "commitizen": {
       "path": "./node_modules/cz-customizable"
     }
+  },
+  "dependencies": {
+    "mysql": "^2.18.1"
   }
 }

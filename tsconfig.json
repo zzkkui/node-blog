@@ -3,41 +3,15 @@
     "module": "commonjs",
     "target": "esnext",
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "sourceMap": true,
-    "outDir": "./dist",  // TS文件编译后会放入到此文件夹内
-    "baseUrl": "./", 
+    "outDir": "./dist", // TS文件编译后会放入到此文件夹内
+    "baseUrl": "./",
     "paths": {
-        "@src/*": [
-          "src/*",
-          "dist/src/*"
-        ],
-        "@router/*": [
-          "src/router/*",
-          "dist/src/router/*"
-        ],
-        "@utils/*": [
-          "src/utils/*",
-          "dist/src/utils/*"
-        ],
-        "@config/*": [
-          "src/config/*",
-          "dist/src/config/*"
-        ],
-        "@controller/*": [
-          "src/controller/*",
-          "dist/src/controller/*"
-        ],
-        "@model/*": [
-          "src/model/*",
-          "dist/src/model/*"
-        ],
+      "@src/*": ["src/*", "dist/src/*"]
     },
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["node_modules", "dist", "pages", "public"],
-  "include": [
-    "src/**/*",
-    "bin",
-  ]
+  "include": ["src/**/*", "bin"]
 }

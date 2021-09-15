@@ -3,14 +3,14 @@ import { ReqType } from "@src/app";
 import { loginCheck } from "@src/controller/user";
 import { ErrorModel, SuccessModel } from "@src/model/resModel";
 
-const handleUserRouter = (req: ReqType, _res: ServerResponse) => {
+const handleUserRouter = async (req: ReqType, _res: ServerResponse) => {
   const { method, path } = req;
 
   if (method === "POST" && path === "/api/user/login") {
     const {
       body: { username, password }
     } = req;
-    const result = loginCheck(username, password);
+    const result = await loginCheck(username, password);
     if (result) {
       return new SuccessModel(result);
     } else {

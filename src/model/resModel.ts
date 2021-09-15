@@ -1,4 +1,4 @@
-type DataType = string | Record<string, any>;
+type DataType = number | string | Record<string, any>;
 type MessageType = string;
 
 class BaseModel {
