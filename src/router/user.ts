@@ -11,8 +11,8 @@ const handleUserRouter = async (req: ReqType, _res: ServerResponse) => {
       body: { username, password }
     } = req;
     const result = await loginCheck(username, password);
-    if (result) {
-      return new SuccessModel(result);
+    if (result[0]?.username) {
+      return new SuccessModel();
     } else {
       return new ErrorModel("登陆失败");
     }

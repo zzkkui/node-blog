@@ -74,7 +74,7 @@ export default (req: ReqType, res: ServerResponse): void => {
 
     // 处理 user 路由
 
-    const userData = handleUserRouter(req, res);
+    const userData = await handleUserRouter(req, res);
 
     if (userData) {
       res.end(JSON.stringify(userData));

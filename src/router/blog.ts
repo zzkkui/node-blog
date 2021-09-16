@@ -19,7 +19,7 @@ const handleBlogRouter = async (
 
   if (method === "GET" && path === "/api/blog/list") {
     const { author = "", keyword = "" } = req.query;
-    const result = await getList(author, keyword);
+    const result: BlogDataType[] = await getList(author, keyword);
     return new SuccessModel(result);
   }
 
@@ -32,7 +32,7 @@ const handleBlogRouter = async (
   if (method === "POST" && path === "/api/blog/new") {
     const { body } = req;
     const result: OkPacket = await newBlog(body);
-    if (result) {
+    if (result.affectedRows > 0) {
       return new SuccessModel({ id: result.insertId });
     } else {
       return new ErrorModel("创建博客失败");
@@ -53,8 +53,8 @@ const handleBlogRouter = async (
     const {
       body: { id }
     } = req;
-    const result = await deleteBlog(id);
-    if (result) {
+    const result: OkPacket = await deleteBlog(id);
+    if (result.affectedRows > 0) {
       return new SuccessModel();
     } else {
       return new ErrorModel("删除博客失败");

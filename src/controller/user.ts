@@ -1,6 +1,6 @@
+import { exec } from "@src/db/mysql";
+
 export const loginCheck = (username: string, password: string) => {
-  return {
-    name: "zzkkui",
-    id: "1"
-  };
+  const sql = `select username, realname from users where username='${username}' and password='${password}'`;
+  return exec(sql);
 };

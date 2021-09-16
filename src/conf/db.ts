@@ -1,6 +1,6 @@
 import { ConnectionConfig } from "mysql";
 
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || "production";
 
 let MYSQL_CONF: ConnectionConfig;
 
