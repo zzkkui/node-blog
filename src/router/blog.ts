@@ -10,6 +10,7 @@ import {
 import { ErrorModel, SuccessModel } from "@src/model/resModel";
 import { ReqType } from "@src/app";
 import { OkPacket } from "mysql";
+import { loginCheck } from "@src/utils/loginCheck";
 
 const handleBlogRouter = async (
   req: ReqType,
@@ -18,7 +19,17 @@ const handleBlogRouter = async (
   const { method, path } = req;
 
   if (method === "GET" && path === "/api/blog/list") {
-    const { author = "", keyword = "" } = req.query;
+    const { keyword = "", isadmin } = req.query;
+    let { author = "" } = req.query;
+
+    if (isadmin) {
+      const loginCheckResult = loginCheck(req);
+      if (loginCheck(req)) {
+        return loginCheckResult;
+      }
+      author = req.session.username;
+    }
+
     const result: BlogDataType[] = await getList(author, keyword);
     return new SuccessModel(result);
   }
@@ -30,7 +41,13 @@ const handleBlogRouter = async (
   }
 
   if (method === "POST" && path === "/api/blog/new") {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheck(req)) {
+      return loginCheckResult;
+    }
+
     const { body } = req;
+    body.author = req.session.username;
     const result: OkPacket = await newBlog(body);
     if (result.affectedRows > 0) {
       return new SuccessModel({ id: result.insertId });
@@ -40,7 +57,13 @@ const handleBlogRouter = async (
   }
 
   if (method === "POST" && path === "/api/blog/update") {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheck(req)) {
+      return loginCheckResult;
+    }
+
     const { body } = req;
+    body.author = req.session.username;
     const result: OkPacket = await updateBlog(body);
     if (result.affectedRows > 0) {
       return new SuccessModel();
@@ -50,10 +73,14 @@ const handleBlogRouter = async (
   }
 
   if (method === "POST" && path === "/api/blog/delete") {
-    const {
-      body: { id }
-    } = req;
-    const result: OkPacket = await deleteBlog(id);
+    const loginCheckResult = loginCheck(req);
+    if (loginCheck(req)) {
+      return loginCheckResult;
+    }
+
+    const { body } = req;
+    body.author = req.session.username;
+    const result: OkPacket = await deleteBlog(body);
     if (result.affectedRows > 0) {
       return new SuccessModel();
     } else {

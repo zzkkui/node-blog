@@ -28,22 +28,22 @@ export const getDetail = (id: string) => {
 };
 
 export const newBlog = (blogData: Partial<BlogDataType> = {}) => {
-  const { title, content } = blogData;
-  const author = "zhangsan";
+  const { title, content, author } = blogData;
   const sql = `insert into blogs(title, content, author, createtime, updatetime)
   values('${title}', '${content}', '${author}', ${Date.now()}, ${Date.now()})`;
   return exec(sql);
 };
 
 export const updateBlog = (blogData: BlogDataType) => {
-  const { title, content, id } = blogData;
-  const author = "zhangsan";
+  const { title, content, id, author } = blogData;
+
   const sql = `update blogs set title='${title}', content='${content}', updatetime=${Date.now()} where id=${id} and author='${author}';`;
   return exec(sql);
 };
 
-export const deleteBlog = (id: string) => {
-  const author = "zhangsan";
+export const deleteBlog = (blogData: BlogDataType) => {
+  const { id, author } = blogData;
+
   const sql = `delete from blogs where id=${id} and author='${author}'`;
   return exec(sql);
 };

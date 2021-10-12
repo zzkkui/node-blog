@@ -2,17 +2,19 @@ const querystring = require("querystring");
 import { IncomingMessage, ServerResponse } from "http";
 import handleBlogRouter from "./router/blog";
 import handleUserRouter from "./router/user";
+import { redisSet, redisGet } from "./db/redis";
 
 export type ReqType = IncomingMessage & {
   path?: string;
   query?: Record<string, string>;
   body?: any;
   cookie?: Record<string, string>;
-  session?: Record<string, string>;
+  sessionId?: string;
+  session?: any;
 };
 
 // session 数据
-const SESSION_DATA: Record<string, Record<string, string>> = {};
+// const SESSION_DATA: Record<string, Record<string, string>> = {};
 
 function getPostData(req: ReqType) {
   return new Promise(
@@ -65,7 +67,7 @@ function getCookieExpires() {
   return d.toUTCString();
 }
 
-export default (req: ReqType, res: ServerResponse): void => {
+export default async (req: ReqType, res: ServerResponse) => {
   // 设置返回格式 JSON
 
   res.setHeader("Content-Type", "application/json");
@@ -80,16 +82,23 @@ export default (req: ReqType, res: ServerResponse): void => {
 
   let needSetCookie = false;
   let userId = req.cookie.userId;
-  if (userId) {
-    if (!SESSION_DATA[userId]) {
-      SESSION_DATA[userId] = {};
-    }
-  } else {
+
+  if (!userId) {
     needSetCookie = true;
     userId = `${Date.now()}_${Math.random()}`;
-    SESSION_DATA[userId] = {};
+    // 初始化session
+    redisSet(userId, {});
   }
-  req.session = SESSION_DATA[userId];
+  // 获取session
+  req.sessionId = userId;
+  const sessionData = await redisGet(req.sessionId);
+  if (sessionData == null) {
+    redisSet(req.sessionId, {});
+    // 设置session
+    req.session = {}; // 最终目的
+  } else {
+    req.session = sessionData; // 最终目的
+  }
 
   getPostData(req).then(async (postData) => {
     req.body = postData;
