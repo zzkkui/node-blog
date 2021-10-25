@@ -1,5 +1,5 @@
 import * as mysql from "mysql";
-import { escape } from "mysql";
+import { escape, escapeId, format } from "mysql";
 import { MYSQL_CONF } from "@src/conf/db";
 
 const con = mysql.createConnection(MYSQL_CONF);
@@ -20,4 +20,4 @@ function exec(sql: mysql.Query | string): Promise<any> {
   });
 }
 
-export { exec, escape };
+export { exec, escape, escapeId, format };

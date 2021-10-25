@@ -1,4 +1,5 @@
 import { exec, escape } from "@src/db/mysql";
+import { filterXSS } from "xss";
 
 export type BlogDataType = {
   id?: number;
@@ -11,7 +12,7 @@ export type BlogDataType = {
 
 export const getList = (author: string, keyword: string) => {
   author = escape(author);
-  // keyword = keyword ? escape(keyword) : keyword;
+  keyword = filterXSS(keyword);
   // where 1=1 占位，防止后面格式错误
   let sql = `select * from blogs where 1=1`;
   if (author) {
@@ -31,8 +32,8 @@ export const getDetail = (id: string) => {
 
 export const newBlog = (blogData: Partial<BlogDataType> = {}) => {
   let { title, content, author } = blogData;
-  title = escape(title);
-  content = escape(content);
+  title = escape(filterXSS(title));
+  content = escape(filterXSS(content));
   author = escape(author);
 
   const sql = `insert into blogs(title, content, author, createtime, updatetime)
@@ -43,8 +44,8 @@ export const newBlog = (blogData: Partial<BlogDataType> = {}) => {
 export const updateBlog = (blogData: BlogDataType) => {
   let { title, content, author } = blogData;
   const { id } = blogData;
-  title = escape(title);
-  content = escape(content);
+  title = escape(filterXSS(title));
+  content = escape(filterXSS(content));
   author = escape(author);
 
   const sql = `update blogs set title=${title}, content=${content}, updatetime=${Date.now()} where id=${id} and author=${author};`;
