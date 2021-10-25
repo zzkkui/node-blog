@@ -1,6 +1,10 @@
-import { exec } from "@src/db/mysql";
+import { exec, escape } from "@src/db/mysql";
 
 export const login = (username: string, password: string) => {
-  const sql = `select username, realname from users where username='${username}' and password='${password}'`;
+  // 预防依赖注入攻击，其实就是转义特殊字符
+  username = escape(username);
+  password = escape(password);
+
+  const sql = `select username, realname from users where username=${username} and password=${password}`;
   return exec(sql);
 };

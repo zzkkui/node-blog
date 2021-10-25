@@ -1,4 +1,4 @@
-import { exec } from "@src/db/mysql";
+import { exec, escape } from "@src/db/mysql";
 
 export type BlogDataType = {
   id?: number;
@@ -28,22 +28,32 @@ export const getDetail = (id: string) => {
 };
 
 export const newBlog = (blogData: Partial<BlogDataType> = {}) => {
-  const { title, content, author } = blogData;
+  let { title, content, author } = blogData;
+  title = escape(title);
+  content = escape(content);
+  author = escape(author);
+
   const sql = `insert into blogs(title, content, author, createtime, updatetime)
-  values('${title}', '${content}', '${author}', ${Date.now()}, ${Date.now()})`;
+  values(${title}, ${content}, ${author}, ${Date.now()}, ${Date.now()})`;
   return exec(sql);
 };
 
 export const updateBlog = (blogData: BlogDataType) => {
-  const { title, content, id, author } = blogData;
+  let { title, content, author } = blogData;
+  const { id } = blogData;
+  title = escape(title);
+  content = escape(content);
+  author = escape(author);
 
-  const sql = `update blogs set title='${title}', content='${content}', updatetime=${Date.now()} where id=${id} and author='${author}';`;
+  const sql = `update blogs set title=${title}, content=${content}, updatetime=${Date.now()} where id=${id} and author=${author};`;
   return exec(sql);
 };
 
 export const deleteBlog = (blogData: BlogDataType) => {
-  const { id, author } = blogData;
+  const { id } = blogData;
+  let { author } = blogData;
+  author = escape(author);
 
-  const sql = `delete from blogs where id=${id} and author='${author}'`;
+  const sql = `delete from blogs where id=${id} and author=${author}`;
   return exec(sql);
 };
