@@ -2,9 +2,13 @@ import * as fs from "fs";
 import * as path from "path";
 
 const env = process.env.NODE_ENV || "production";
+export const logPath =
+  env === "production"
+    ? "C:/Users/13210/Desktop/learn/node/blog/logs"
+    : "C:/Users/13210/Desktop/learn/node/blog/logs";
 
 function createWriteStream(filename: string) {
-  const fullFilename = path.join(__dirname, "../", "../", "logs", filename);
+  const fullFilename = path.join(logPath, filename);
   return fs.createWriteStream(fullFilename, {
     flags: "a" // 追加 ，覆盖为 'w'
   });
