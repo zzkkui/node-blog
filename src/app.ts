@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import handleBlogRouter from "./router/blog";
 import handleUserRouter from "./router/user";
 import { redisSet, redisGet } from "./db/redis";
+import { access } from "./utils/log";
 
 export type ReqType = IncomingMessage & {
   path?: string;
@@ -68,8 +69,13 @@ function getCookieExpires() {
 }
 
 export default async (req: ReqType, res: ServerResponse) => {
-  // 设置返回格式 JSON
+  access(
+    `${req.method} -- ${req.url} -- ${
+      req.headers["user-agent"]
+    } -- ${Date.now()}`
+  );
 
+  // 设置返回格式 JSON
   res.setHeader("Content-Type", "application/json");
 
   const { url } = req;
