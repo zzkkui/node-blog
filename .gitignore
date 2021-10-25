@@ -24,3 +24,6 @@ yarn-error.log*
 *.sw?
 
 *.code-workspace
+*.access.log
+*.error.log
+*.event.log
