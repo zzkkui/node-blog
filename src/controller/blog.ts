@@ -10,10 +10,12 @@ export type BlogDataType = {
 };
 
 export const getList = (author: string, keyword: string) => {
+  author = escape(author);
+  // keyword = keyword ? escape(keyword) : keyword;
   // where 1=1 占位，防止后面格式错误
   let sql = `select * from blogs where 1=1`;
   if (author) {
-    sql = `${sql} and author='${author}'`;
+    sql = `${sql} and author=${author}`;
   }
   if (keyword) {
     sql = `${sql} and title like '%${keyword}%'`;
