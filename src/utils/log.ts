@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const env = process.env.NODE_ENV || "production";
+const env = process.env.NODE_ENV || "dev";
 export const logPath =
   env === "production"
     ? "C:/Users/13210/Desktop/learn/node/blog/logs"

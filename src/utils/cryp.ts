@@ -13,6 +13,6 @@ function genPassword(password: string) {
   return md5(str);
 }
 
-console.log(genPassword("123456"));
+// console.log(genPassword("123456"));
 
 export default genPassword;

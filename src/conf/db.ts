@@ -1,7 +1,7 @@
 import { ConnectionConfig } from "mysql";
 import { ClientOpts } from "redis";
 
-const env = process.env.NODE_ENV || "production";
+const env = process.env.NODE_ENV || "dev";
 
 let MYSQL_CONF: ConnectionConfig;
 let REDIS_CONF: ClientOpts;
