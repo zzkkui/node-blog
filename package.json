@@ -4,13 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start:tsc": "tsc && node -r tsconfig-paths/register dist/bin/www",
+    "start:dist": "tsc --build && node -r tsconfig-paths/register dist/bin/www",
     "start": "npm run tsc && ts-node -r tsconfig-paths/register bin/www",
     "serve": "cross-env NODE_ENV=dev ts-node-dev -r tsconfig-paths/register bin/www",
     "lint": "npm run tsc && eslint --ext .ts ./src",
     "lint-fix": "npm run lint --fix",
     "tsc": "tsc --noEmit",
-    "prd": "cross-env NODE_ENV=production tsc && node -r tsconfig-paths/register dist/bin/www"
+    "prd": "cross-env NODE_ENV=production tsc"
   },
   "keywords": [],
   "author": "",
