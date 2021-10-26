@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start:dist": "build && serve:dist",
+    "start:dist": "yarn build && yarn serve:dist",
     "start": "npm run tsc && ts-node -r tsconfig-paths/register bin/www",
     "serve": "ts-node-dev -r tsconfig-paths/register bin/www",
     "lint": "npm run tsc && eslint --ext .ts ./src",
