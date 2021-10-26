@@ -1,4 +1,4 @@
-const http = require("http");
+import * as http from "http";
 import severHandle from "../src/app";
 
 const PORT = 8000;

@@ -13,5 +13,5 @@
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["node_modules", "dist", "pages", "public"],
-  "include": ["src/**/*", "bin"]
+  "include": ["src/**/*", "bin/*"]
 }
