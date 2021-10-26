@@ -4,13 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start:dist": "./node_modules/.bin/ts-node build.ts && node -r tsconfig-paths/register dist/bin/www",
+    "start:dist": "build && serve:dist",
     "start": "npm run tsc && ts-node -r tsconfig-paths/register bin/www",
     "serve": "ts-node-dev -r tsconfig-paths/register bin/www",
     "lint": "npm run tsc && eslint --ext .ts ./src",
     "lint-fix": "npm run lint --fix",
     "tsc": "tsc --noEmit",
-    "prod": "cross-env NODE_ENV=production ./node_modules/.bin/ts-node build.ts"
+    "build": "cross-env NODE_ENV=production ./node_modules/.bin/ts-node build.ts",
+    "serve:dist": "node -r tsconfig-paths/register dist/bin/www"
   },
   "keywords": [],
   "author": "",
