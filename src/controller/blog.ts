@@ -22,7 +22,6 @@ export const getList = (author: string, keyword: string) => {
     sql = `${sql} and title like '%${keyword}%'`;
   }
   sql = `${sql} order by createtime desc;`;
-  console.log(sql);
   return exec(sql);
 };
 

@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs";
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
@@ -21,8 +23,32 @@ const RedisStore = redis(session);
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(req.app.get("env"));
+  next();
+});
+
 // 日志
-app.use(logger("dev"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    logger("dev", {
+      stream: process.stdout // 默认参数
+    })
+  );
+} else {
+  // dist 目录对应 logs 目录相对地址
+  const fileName = path.join(__dirname, "../../logs", "access.log");
+  const writeStream = fs.createWriteStream(fileName, {
+    flags: "a"
+  });
+  app.use(
+    logger("combined", {
+      stream: writeStream
+    })
+  );
+}
+
 // 解析数据格式 header json 格式
 app.use(express.json());
 // 解析数据格式 header urlencoded 格式
