@@ -3,9 +3,21 @@ import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import StatusCodes from "http-status-codes";
+import session from "express-session";
+import redis from "connect-redis";
 
 import blogRouter from "@src/routes/blog";
 import userRouter from "@src/routes/user";
+import { redisClient } from "./db/redis";
+
+declare module "express-session" {
+  export interface SessionData {
+    username: string;
+    realname: string;
+  }
+}
+
+const RedisStore = redis(session);
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -18,6 +30,22 @@ app.use(express.urlencoded({ extended: false }));
 // 处理 cookie
 app.use(cookieParser());
 
+const sessionStore = new RedisStore({
+  client: redisClient
+});
+
+app.use(
+  session({
+    secret: "PPzz!112358",
+    cookie: {
+      path: "/", // 默认
+      httpOnly: true, // 默认
+      maxAge: 24 * 60 * 60 * 1000
+    },
+    store: sessionStore
+  })
+);
+
 // 注册路由
 app.use("/api/blog", blogRouter);
 app.use("/api/user", userRouter);
@@ -29,24 +57,6 @@ app.use((_req, _res, next) => {
 });
 
 // error handler
-// app.use(
-//   (
-//     err: Error & { status: number },
-//     req: Request,
-//     res: Response,
-//     next: NextFunction
-//   ) => {
-//     // set locals, only providing error in development
-//     res.locals.message = err.message;
-//     // console.log(req.app.get("env"));
-//     res.locals.error = req.app.get("env") === "development" ? err : {};
-
-//     // render the error page
-//     res.status(err.status || 500);
-//     res.render("error");
-//   }
-// );
-
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

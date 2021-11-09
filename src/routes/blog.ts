@@ -1,3 +1,6 @@
+import express from "express";
+import { OkPacket } from "mysql";
+import loginCheck from "@src/middleware/loginCheck";
 import {
   BlogDataType,
   deleteBlog,
@@ -7,22 +10,21 @@ import {
   updateBlog
 } from "@src/controller/blog";
 import { ErrorModel, SuccessModel } from "@src/modules/resModle";
-import express from "express";
-import { OkPacket } from "mysql";
 
 const router = express.Router();
 
 router.get("/list", async (req, res, next) => {
-  const { keyword = "" } = req.query;
-  const { author = "" } = req.query;
+  const { keyword = "", isadmin } = req.query as any;
+  let { author = "" } = req.query as any;
 
-  // if (isadmin) {
-  //   const loginCheckResult = loginCheck(req);
-  //   if (loginCheck(req)) {
-  //     return loginCheckResult;
-  //   }
-  //   author = req.session.username;
-  // }
+  // 管理页
+  if (isadmin) {
+    if (!req.session.username) {
+      res.json(new ErrorModel("未登录"));
+      return;
+    }
+    author = req.session.username;
+  }
 
   const result: BlogDataType[] = await getList(
     author as string,
@@ -32,19 +34,14 @@ router.get("/list", async (req, res, next) => {
 });
 
 router.get("/detail", async (req, res, next) => {
-  const { id } = req.query;
-  const result: BlogDataType[] = await getDetail(id as string);
+  const { id } = req.query as any;
+  const result: BlogDataType[] = await getDetail(id);
   return res.json(new SuccessModel(result[0]));
 });
 
-router.post("/new", async (req, res, next) => {
-  // const loginCheckResult = loginCheck(req);
-  // if (loginCheck(req)) {
-  //   return loginCheckResult;
-  // }
-
+router.post("/new", loginCheck, async (req, res, next) => {
   const { body } = req;
-  // body.author = req.session.username;
+  body.author = req.session.username;
   const result: OkPacket = await newBlog(body);
   if (result.affectedRows > 0) {
     return res.json(new SuccessModel({ id: result.insertId }));
@@ -53,14 +50,9 @@ router.post("/new", async (req, res, next) => {
   }
 });
 
-router.post("/update", async (req, res, next) => {
-  // const loginCheckResult = loginCheck(req);
-  //   if (loginCheck(req)) {
-  //     return loginCheckResult;
-  //   }
-
+router.post("/update", loginCheck, async (req, res, next) => {
   const { body } = req;
-  // body.author = req.session.username;
+  body.author = req.session.username;
   const result: OkPacket = await updateBlog(body);
   if (result.affectedRows > 0) {
     return res.json(new SuccessModel());
@@ -69,14 +61,9 @@ router.post("/update", async (req, res, next) => {
   }
 });
 
-router.post("/detail", async (req, res, next) => {
-  // const loginCheckResult = loginCheck(req);
-  // if (loginCheck(req)) {
-  //   return loginCheckResult;
-  // }
-
+router.post("/delete", loginCheck, async (req, res, next) => {
   const { body } = req;
-  // body.author = req.session.username;
+  body.author = req.session.username;
   const result: OkPacket = await deleteBlog(body);
   if (result.affectedRows > 0) {
     return res.json(new SuccessModel());
