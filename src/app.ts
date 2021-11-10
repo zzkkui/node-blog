@@ -28,6 +28,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(req.app.get("env"));
   next();
 });
+export const logPath = path.join(__dirname, "../../logs", "access.log");
 
 // 日志
 if (process.env.NODE_ENV !== "production") {
@@ -38,8 +39,7 @@ if (process.env.NODE_ENV !== "production") {
   );
 } else {
   // dist 目录对应 logs 目录相对地址
-  const fileName = path.join(__dirname, "../../logs", "access.log");
-  const writeStream = fs.createWriteStream(fileName, {
+  const writeStream = fs.createWriteStream(logPath, {
     flags: "a"
   });
   app.use(
