@@ -11,16 +11,14 @@ import app from "../src/app";
  * Get port from environment and store in Express.
  */
 
-const _debug = debug("express-test:server");
-
 const port = normalizePort(process.env.PORT || "8000");
-app.set("port", port);
+// app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+const server = http.createServer(app.callback());
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -55,7 +53,6 @@ function normalizePort(val: string) {
  */
 
 function onError(error: Error & { code: string; syscall: string }) {
-  console.log(error);
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -82,7 +79,7 @@ function onError(error: Error & { code: string; syscall: string }) {
  */
 
 function onListening() {
-  const addr = server.address()!;
-  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  _debug("Listening on " + bind);
+  const addr = server.address();
+  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr!.port;
+  debug("Listening on " + bind);
 }

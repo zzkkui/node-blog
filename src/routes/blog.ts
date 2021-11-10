@@ -1,6 +1,6 @@
-import express from "express";
+import KoaRouter from "koa-router";
 import { OkPacket } from "mysql";
-import loginCheck from "@src/middleware/loginCheck";
+// import loginCheck from "@src/middleware/loginCheck";
 import {
   BlogDataType,
   deleteBlog,
@@ -11,64 +11,67 @@ import {
 } from "@src/controller/blog";
 import { ErrorModel, SuccessModel } from "@src/modules/resModle";
 
-const router = express.Router();
+const router = new KoaRouter();
 
-router.get("/list", async (req, res, next) => {
-  const { keyword = "", isadmin } = req.query as any;
-  let { author = "" } = req.query as any;
+router.prefix("/api/blog");
+// const router = express.Router();
+
+router.get("/list", async (ctx, next) => {
+  const { keyword = "", isadmin } = ctx.query;
+  const { author = "" } = ctx.query;
 
   // 管理页
   if (isadmin) {
-    if (!req.session.username) {
-      res.json(new ErrorModel("未登录"));
-      return;
-    }
-    author = req.session.username;
+    // if (!ctx.session.username) {
+    //   ctx.json(new ErrorModel("未登录"));
+    //   return;
+    // }
+    // author = ctx.session.username;
   }
 
   const result: BlogDataType[] = await getList(
     author as string,
     keyword as string
   );
-  return res.json(new SuccessModel(result));
+  ctx.body = new SuccessModel(result);
 });
 
-router.get("/detail", async (req, res, next) => {
-  const { id } = req.query as any;
+router.get("/detail", async (ctx, next) => {
+  const { id } = ctx.query as any;
   const result: BlogDataType[] = await getDetail(id);
-  return res.json(new SuccessModel(result[0]));
+  ctx.body = new SuccessModel(result[0]);
 });
 
-router.post("/new", loginCheck, async (req, res, next) => {
-  const { body } = req;
-  body.author = req.session.username;
+router.post("/new", async (ctx, next) => {
+  const { body } = ctx;
+  // body.author = ctx.session.username;
   const result: OkPacket = await newBlog(body);
   if (result.affectedRows > 0) {
-    return res.json(new SuccessModel({ id: result.insertId }));
+    ctx.body = new SuccessModel({ id: result.insertId });
   } else {
-    return res.json(new ErrorModel("创建博客失败"));
+    ctx.body = new ErrorModel("创建博客失败");
   }
 });
 
-router.post("/update", loginCheck, async (req, res, next) => {
-  const { body } = req;
-  body.author = req.session.username;
+router.post("/update", async (ctx, next) => {
+  const { body } = ctx;
+  // body.author = ctx.session.username;
   const result: OkPacket = await updateBlog(body);
   if (result.affectedRows > 0) {
-    return res.json(new SuccessModel());
+    ctx.body = new SuccessModel();
   } else {
-    return res.json(new ErrorModel("更新博客失败"));
+    ctx.body = new ErrorModel("更新博客失败");
   }
 });
 
-router.post("/delete", loginCheck, async (req, res, next) => {
-  const { body } = req;
-  body.author = req.session.username;
+router.post("/delete", async (ctx, next) => {
+  const { body } = ctx;
+  // body.author = ctx.session.username;
   const result: OkPacket = await deleteBlog(body);
   if (result.affectedRows > 0) {
-    return res.json(new SuccessModel());
+    ctx.body = new SuccessModel();
   } else {
-    return res.json(new ErrorModel("删除博客失败"));
+    ctx.body = new ErrorModel("删除博客失败");
   }
 });
 
