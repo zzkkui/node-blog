@@ -1,9 +1,10 @@
 import { ErrorModel } from "@src/modules/resModle";
+import { BaseContext } from "koa";
 
-export default (req: any, res: any, next: any) => {
-  if (req.session.username) {
-    next();
-    return;
+export default async (ctx: BaseContext, next: any) => {
+  if (ctx.session?.username) {
+    await next();
+  } else {
+    ctx.body = new ErrorModel("未登录");
   }
-  res.json(new ErrorModel("未登录"));
 };

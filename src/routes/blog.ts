@@ -10,6 +10,7 @@ import {
   updateBlog
 } from "@src/controller/blog";
 import { ErrorModel, SuccessModel } from "@src/modules/resModle";
+import loginCheck from "@src/middleware/loginCheck";
 
 const router = new KoaRouter();
 
@@ -18,15 +19,15 @@ router.prefix("/api/blog");
 
 router.get("/list", async (ctx, next) => {
   const { keyword = "", isadmin } = ctx.query;
-  const { author = "" } = ctx.query;
+  let { author = "" } = ctx.query;
 
   // 管理页
   if (isadmin) {
-    // if (!ctx.session.username) {
-    //   ctx.json(new ErrorModel("未登录"));
-    //   return;
-    // }
-    // author = ctx.session.username;
+    if (!ctx.session?.username) {
+      ctx.body = new ErrorModel("未登录");
+      return;
+    }
+    author = ctx.session.username;
   }
 
   const result: BlogDataType[] = await getList(
@@ -42,9 +43,11 @@ router.get("/detail", async (ctx, next) => {
   ctx.body = new SuccessModel(result[0]);
 });
 
-router.post("/new", async (ctx, next) => {
-  const { body } = ctx;
-  // body.author = ctx.session.username;
+router.post("/new", loginCheck, async (ctx, next) => {
+  const {
+    request: { body }
+  } = ctx;
+  body.author = ctx.session!.username;
   const result: OkPacket = await newBlog(body);
   if (result.affectedRows > 0) {
     ctx.body = new SuccessModel({ id: result.insertId });
@@ -53,9 +56,11 @@ router.post("/new", async (ctx, next) => {
   }
 });
 
-router.post("/update", async (ctx, next) => {
-  const { body } = ctx;
-  // body.author = ctx.session.username;
+router.post("/update", loginCheck, async (ctx, next) => {
+  const {
+    request: { body }
+  } = ctx;
+  body.author = ctx.session!.username;
   const result: OkPacket = await updateBlog(body);
   if (result.affectedRows > 0) {
     ctx.body = new SuccessModel();
@@ -64,9 +69,11 @@ router.post("/update", async (ctx, next) => {
   }
 });
 
-router.post("/delete", async (ctx, next) => {
-  const { body } = ctx;
-  // body.author = ctx.session.username;
+router.post("/delete", loginCheck, async (ctx, next) => {
+  const {
+    request: { body }
+  } = ctx;
+  body.author = ctx.session!.username;
   const result: OkPacket = await deleteBlog(body);
   if (result.affectedRows > 0) {
     ctx.body = new SuccessModel();

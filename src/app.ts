@@ -5,9 +5,12 @@ import json from "koa-json";
 import onerror from "koa-onerror";
 import bodyparser from "koa-bodyparser";
 import logger from "koa-logger";
+import session from "koa-session";
+import redisStore from "koa-redis";
 
 import blog from "@src/routes/blog";
 import user from "@src/routes/user";
+import { REDIS_CONF } from "./config/db";
 
 const app = new Koa();
 
@@ -43,6 +46,25 @@ app.use(
 );
 app.use(json());
 app.use(logger());
+
+// session 配置
+app.keys = ["PPzz123456!"];
+app.use(
+  session(
+    {
+      //配置cookie
+      path: "/",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      // 配置redis
+      store: redisStore({
+        host: REDIS_CONF.host,
+        port: REDIS_CONF.port
+      })
+    },
+    app
+  )
+);
 
 // 注册路由
 // allowedMethods 主要用于 405 Method Not Allowed 这个状态码相关
