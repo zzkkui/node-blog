@@ -17,6 +17,13 @@ const app = new Koa();
 
 export const logPath = path.join(__dirname, "../../logs", "access.log");
 
+app.use(async (ctx, next) => {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.set("X-Response-Time", `${ms}ms`);
+});
+
 // 日志
 if (app.env !== "production") {
   app.use(
