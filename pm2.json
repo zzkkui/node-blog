@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "express-blog",
+      "script": "./dist/bin/www.js",
+      "merge_logs": true,
+      "max_restarts": 20,
+      "instances": 2,
+      "node_args": "-r tsconfig-paths/register",
+      "watch": ["src"],
+      "env": { "NODE_ENV": "production", "PORT": 8000 }
+    }
+  ]
+}
