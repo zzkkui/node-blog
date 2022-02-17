@@ -9,8 +9,6 @@ import StatusCodes from "http-status-codes";
 import session from "express-session";
 import redis from "connect-redis";
 
-// import blogRouter from "@src/routes/blog";
-// import userRouter from "@src/routes/user";
 import register from "./register";
 import { redisClient } from "./db/redis";
 import routers from "./routes";
@@ -76,8 +74,6 @@ app.use(
 );
 
 // 注册路由
-// app.use("/api/blog", blogRouter);
-// app.use("/api/user", userRouter);
 register(routers, "/api", app);
 
 // 先注册路由，路由没有匹配到，再来匹配 404

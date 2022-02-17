@@ -25,8 +25,8 @@ import { MergeRequest } from "@src/interface";
 class BlogRoute {
   @Get()
   async getList(req: MergeRequest, res: express.Response, next: NextFunction) {
-    const { keyword = "", isadmin } = req.query as any;
-    let { author = "" } = req.query as any;
+    const { keyword = "", isadmin } = req.query;
+    let { author = "" } = req.query;
     // 管理页
     if (isadmin) {
       if (!req?.session.username) {

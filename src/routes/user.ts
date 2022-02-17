@@ -10,7 +10,6 @@ class User {
   async login(@Body() body: any, req: MergeRequest, res: express.Response) {
     const { username, password } = body;
     const result = await login(username, password);
-    console.log(result);
     if (result[0]?.username) {
       const { username, realname } = result[0];
       req.session.username = username;
