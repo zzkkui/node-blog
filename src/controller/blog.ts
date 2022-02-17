@@ -52,8 +52,7 @@ export const updateBlog = (blogData: BlogDataType) => {
   return exec(sql);
 };
 
-export const deleteBlog = (blogData: BlogDataType) => {
-  const { id } = blogData;
+export const deleteBlog = (id: string, blogData: BlogDataType) => {
   let { author } = blogData;
   author = escape(author);
 

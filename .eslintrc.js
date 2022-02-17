@@ -25,6 +25,7 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": [2, { args: "none" }],
         "@typescript-eslint/explicit-module-boundary-types": 0,
         "@typescript-eslint/no-non-null-assertion": 0,
+        '@typescript-eslint/ban-types': 'off',
         "prettier/prettier": ["error", {
             "endOfLine":"auto"
         }]

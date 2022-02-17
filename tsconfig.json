@@ -6,6 +6,11 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "moduleResolution": "Node",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "types": ["reflect-metadata", "node"],
     "sourceMap": true,
     "outDir": "./dist", // TS文件编译后会放入到此文件夹内
     "baseUrl": "./",
