@@ -9,5 +9,7 @@ export default (
 ) => {
   if (!req.session.username) {
     return res.json(new ErrorModel("未登录"));
+  } else {
+    next();
   }
 };

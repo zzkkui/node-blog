@@ -1,19 +1,16 @@
 import "reflect-metadata";
 import path from "path";
 import fs from "fs";
-import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import StatusCodes from "http-status-codes";
 import session from "express-session";
 import redis from "connect-redis";
 
-// import blogRouter from "@src/routes/blog";
-// import userRouter from "@src/routes/user";
-import register from "./register";
 import { redisClient } from "./db/redis";
-import routers from "./routes";
+import BlogController from "./routes/blog";
+import UserController from "./routes/user";
+import { useExpressServer } from "routing-controllers";
 
 declare module "express-session" {
   export interface SessionData {
@@ -25,7 +22,7 @@ declare module "express-session" {
 const RedisStore = redis(session);
 
 const app = express();
-const { BAD_REQUEST } = StatusCodes;
+// const { BAD_REQUEST } = StatusCodes;
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(req.app.get("env"));
@@ -76,24 +73,9 @@ app.use(
 );
 
 // 注册路由
-// app.use("/api/blog", blogRouter);
-// app.use("/api/user", userRouter);
-register(routers, "/api", app);
-
-// 先注册路由，路由没有匹配到，再来匹配 404
-// catch 404 and forward to error handler
-app.use((_req, _res, next) => {
-  next(createError(404));
-});
-
-// error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  return res.status(BAD_REQUEST).json({
-    error: err.message
-  });
+useExpressServer(app, {
+  routePrefix: "/api",
+  controllers: [BlogController, UserController]
 });
 
 export default app;
