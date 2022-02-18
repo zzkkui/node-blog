@@ -6,11 +6,14 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import session from "express-session";
 import redis from "connect-redis";
+// import StatusCodes from "http-status-codes";
 
 import { redisClient } from "./db/redis";
 import BlogController from "./routes/blog";
 import UserController from "./routes/user";
 import { useExpressServer } from "routing-controllers";
+import ErrorHandler from "./middleware/errorHandler";
+import NotFoundMiddleware from "./middleware/notFound";
 
 declare module "express-session" {
   export interface SessionData {
@@ -75,7 +78,9 @@ app.use(
 // 注册路由
 useExpressServer(app, {
   routePrefix: "/api",
-  controllers: [BlogController, UserController]
+  defaultErrorHandler: false,
+  controllers: [BlogController, UserController],
+  middlewares: [NotFoundMiddleware, ErrorHandler]
 });
 
 export default app;
